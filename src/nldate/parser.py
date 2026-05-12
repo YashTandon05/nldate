@@ -171,12 +171,13 @@ def _parse_relative(text: str, reference: date) -> date | None:
         return _add(reference, -_parse_number(amount_text), unit)
 
     match = re.fullmatch(
-        r"([a-z0-9]+) (day|days|week|weeks|month|months|year|years) from (today|tomorrow|yesterday)",
+        r"([a-z0-9]+) (day|days|week|weeks|month|months|year|years) from "
+        r"(now|today|tomorrow|yesterday)",
         text,
     )
     if match:
         amount_text, unit, base_text = match.groups()
-        base = parse(base_text, today=reference)
+        base = reference if base_text == "now" else parse(base_text, today=reference)
         return _add(base, _parse_number(amount_text), unit)
 
     return None

@@ -50,11 +50,15 @@ def test_year_month_day() -> None:
 
 
 def test_year_month_day_slashes() -> None:
-    assert parse("2025/12/04") == date(2025, 12, 4)
+    assert parse("2026/05/11") == date(2026, 5, 11)
 
 
 def test_abbreviated_month_with_period() -> None:
-    assert parse("Dec. 1, 2025") == date(2025, 12, 1)
+    assert parse("May. 11, 2026") == date(2026, 5, 11)
+
+
+def test_two_weeks_from_now() -> None:
+    assert parse("2 weeks from now", today=date(2026, 5, 11)) == date(2026, 5, 25)
 
 
 def test_bad_input() -> None:
