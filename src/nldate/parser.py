@@ -184,22 +184,15 @@ def _parse_relative(text: str, reference: date) -> date | None:
 
 
 def _parse_before_after(text: str, reference: date) -> date | None:
-    match = re.fullmatch(
-        r"([a-z0-9]+) (day|days|week|weeks|month|months|year|years) "
-        r"(before|after|from) (.+)",
-        text,
-    )
+    match = re.fullmatch(r"(.+) (before|after|from) (.+)", text)
     if not match:
         return None
 
-    amount_text, unit, direction, base_text = match.groups()
+    duration_text, direction, base_text = match.groups()
     base = parse(base_text, today=reference)
-    amount = _parse_number(amount_text)
 
-    if direction == "before":
-        amount = -amount
-
-    return _add(base, amount, unit)
+    sign = -1 if direction == "before" else 1
+    return _apply_duration(base, duration_text, sign)
 
 
 def _add(base: date, amount: int, unit: str) -> date:
@@ -216,6 +209,45 @@ def _add(base: date, amount: int, unit: str) -> date:
         return _add_months(base, amount * 12)
 
     raise ValueError(f"Unsupported unit: {unit}")
+
+
+def _apply_duration(base: date, duration_text: str, sign: int) -> date:
+    result = base
+
+    for amount, unit in _parse_duration_parts(duration_text):
+        result = _add(result, sign * amount, unit)
+
+    return result
+
+
+def _parse_duration_parts(duration_text: str) -> list[tuple[int, str]]:
+    cleaned = duration_text.replace(",", " ").replace(" and ", " ")
+    tokens = cleaned.split()
+
+    if len(tokens) % 2 != 0:
+        raise ValueError(f"Invalid duration: {duration_text!r}")
+
+    parts: list[tuple[int, str]] = []
+
+    for i in range(0, len(tokens), 2):
+        amount = _parse_number(tokens[i])
+        unit = tokens[i + 1]
+
+        if unit not in {
+            "day",
+            "days",
+            "week",
+            "weeks",
+            "month",
+            "months",
+            "year",
+            "years",
+        }:
+            raise ValueError(f"Invalid duration unit: {unit!r}")
+
+        parts.append((amount, unit))
+
+    return parts
 
 
 def _add_months(base: date, months: int) -> date:

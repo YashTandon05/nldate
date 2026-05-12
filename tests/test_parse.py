@@ -61,6 +61,16 @@ def test_two_weeks_from_now() -> None:
     assert parse("2 weeks from now", today=date(2026, 5, 11)) == date(2026, 5, 25)
 
 
+def test_compound_duration_before_date() -> None:
+    assert parse("2 years, 3 months before Dec. 1, 2025") == date(2023, 9, 1)
+
+
+def test_compound_duration_after_yesterday() -> None:
+    assert parse(
+        "1 year and 2 months after yesterday", today=date(2025, 12, 1)
+    ) == date(2027, 1, 30)
+
+
 def test_bad_input() -> None:
     with pytest.raises(ValueError):
         parse("banana calendar magic")
