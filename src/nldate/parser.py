@@ -51,8 +51,13 @@ def parse(s: str, today: date | None = None) -> date:
 
     simple = {
         "today": reference,
+        "now": reference,
         "tomorrow": reference + timedelta(days=1),
         "yesterday": reference - timedelta(days=1),
+        "the day after tomorrow": reference + timedelta(days=2),
+        "day after tomorrow": reference + timedelta(days=2),
+        "the day before yesterday": reference - timedelta(days=2),
+        "day before yesterday": reference - timedelta(days=2),
     }
     if text in simple:
         return simple[text]

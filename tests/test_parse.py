@@ -33,6 +33,10 @@ def test_two_weeks_from_tomorrow() -> None:
     )
 
 
+def test_day_after_tomorrow() -> None:
+    assert parse("the day after tomorrow", today=date(2026, 5, 11)) == date(2026, 5, 13)
+
+
 def test_next_tuesday() -> None:
     assert parse("next Tuesday", today=date(2026, 5, 11)) == date(2026, 5, 12)
 
