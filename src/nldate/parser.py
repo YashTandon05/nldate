@@ -98,6 +98,11 @@ def _parse_absolute(text: str, reference: date) -> date | None:
         year, month, day = map(int, iso.groups())
         return date(year, month, day)
 
+    slash_iso = re.fullmatch(r"(\d{4})/(\d{1,2})/(\d{1,2})", text)
+    if slash_iso:
+        year, month, day = map(int, slash_iso.groups())
+        return date(year, month, day)
+
     numeric = re.fullmatch(r"(\d{1,2})/(\d{1,2})/(\d{2,4})", text)
     if numeric:
         month, day, year = map(int, numeric.groups())
