@@ -53,6 +53,10 @@ def test_year_month_day_slashes() -> None:
     assert parse("2025/12/04") == date(2025, 12, 4)
 
 
+def test_abbreviated_month_with_period() -> None:
+    assert parse("Dec. 1, 2025") == date(2025, 12, 1)
+
+
 def test_bad_input() -> None:
     with pytest.raises(ValueError):
         parse("banana calendar magic")

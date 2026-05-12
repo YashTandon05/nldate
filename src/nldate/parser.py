@@ -78,9 +78,17 @@ def parse(s: str, today: date | None = None) -> date:
 
 def _normalize(s: str) -> str:
     text = s.strip().lower()
+
+    # Remove ordinal suffixes: 1st -> 1
     text = re.sub(r"\b(\d+)(st|nd|rd|th)\b", r"\1", text)
+
+    # Remove punctuation commonly used in dates
     text = text.replace(",", "")
+    text = text.replace(".", "")
+
+    # Normalize whitespace
     text = re.sub(r"\s+", " ", text)
+
     return text
 
 
